@@ -12,7 +12,7 @@ class News:
 
     @property
     def source(self) -> str:
-        return self.source
+        return self.__source
 
     @property
     def title(self) -> str:
@@ -25,5 +25,8 @@ class News:
     @property
     def publication_date(self) -> str:
         return self.__publication_date
+
+    def __repr__(self):
+        return f'Source: {self.source}; title: {self.title}; link: {self.link}; date: {self.publication_date}'
 
 
