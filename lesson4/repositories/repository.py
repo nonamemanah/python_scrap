@@ -1,6 +1,8 @@
 import json
 import requests
+import unicodedata
 from lxml import html
+from pprint import pprint
 
 class Repository:
     __base_url: str = ''
@@ -24,8 +26,27 @@ class Repository:
         if not response.ok:
             return []
 
-        root = html.fromstring(response.text)
-        news_container = root.xpath("/*[contains(@class, 'news news_y-xs')]")
-        main_news_item = news_container.xpath("/*[contains(@class, 'news-item_main)")
-        pass
+        root = html.fromstring(unicodedata.normalize("NFKD", response.text))
+        news_container = root.xpath("//*[@id='news']/div[contains(@class, 'news-item')]")
+        for item in news_container[:-3]:
+            self.__prepare_data(item)
+
+    def __prepare_data(self, item):
+        link = item.xpath('.//a')[0]
+        link_text = link.xpath('.//text()')[0]
+        link_href = item.xpath('.//a/@href')[0]
+        pprint(link_text)
+        pprint(link_href)
+        self.__get_datail_news(link_href)
+
+    def __get_datail_news(self, link):
+        response = requests.get(link)
+        if not response.ok:
+            return
+
+        root = html.fromstring(unicodedata.normalize("NFKD", response.text))
+        news_item_create_date = root.xpath("//*[contains(@class, 'js-ago')]/@datetime")
+        print(news_item_create_date)
+
+
 
