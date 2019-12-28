@@ -1,4 +1,6 @@
 import json
+from datetime import datetime
+
 import requests
 import unicodedata
 from lxml import html
@@ -61,7 +63,7 @@ class Repository:
 
         root = html.fromstring(unicodedata.normalize("NFKD", response.text))
         news_item_create_date = root.xpath("//*[contains(@class, 'js-ago')]/@datetime")
-        return news_item_create_date[0]
+        return news_item_create_date[0] if len(news_item_create_date) > 0 else f"{datetime.today()}"
 
 
 

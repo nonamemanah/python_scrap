@@ -1,11 +1,15 @@
-from lesson4.repositories.mail_repository import MailRepository
+from pprint import pprint
+
+from lesson4.services.news_service import NewsService
 
 
 def main():
-    repository = MailRepository()
-    news_items = repository.get_data()
-    for item in news_items:
-        print(item)
+    __service = NewsService()
+    '''__service.sync_news()'''
+    items = __service.get_news()
+    for item in items:
+        pprint(item)
+
 
 if __name__ == '__main__':
     main()
