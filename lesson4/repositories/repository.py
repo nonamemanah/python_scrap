@@ -1,12 +1,8 @@
-import json
+import unicodedata
 from datetime import datetime
 
 import requests
-import unicodedata
 from lxml import html
-from pprint import pprint
-
-from lesson4.entity.news import News
 
 
 class Repository:
@@ -35,28 +31,21 @@ class Repository:
     def source(self, value: str):
         self.__source = value
 
+    def collect_data(self):
+        pass
+
     def get_data(self):
-        result = []
         response = requests.get(self.base_url, headers=self.__headers)
         if not response.ok:
-            return []
+            return None
 
         root = html.fromstring(unicodedata.normalize("NFKD", response.text))
-        news_container = root.xpath("//*[@id='news']/div[contains(@class, 'news-item')]")
-        for item in news_container[:-3]:
-            news_item = self.__prepare_data(item)
-            result.append(news_item)
+        return root
 
-        return result
+    def prepare_data(self, item):
+        pass
 
-    def __prepare_data(self, item):
-        link = item.xpath('.//a')[0]
-        link_text = link.xpath('.//text()')[0]
-        link_href = item.xpath('.//a/@href')[0]
-        news_date = self.__get_news_date(link_href)
-        return News(self.source, link_text, link_href, news_date)
-
-    def __get_news_date(self, link):
+    def _get_news_date(self, link):
         response = requests.get(link)
         if not response.ok:
             return
