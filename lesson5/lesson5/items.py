@@ -3,7 +3,7 @@
 import scrapy
 
 
-class HeadHunterItem(scrapy.Item):
+class JobItem(scrapy.Item):
     name = scrapy.Field()
     salary = scrapy.Field()
     link = scrapy.Field()
